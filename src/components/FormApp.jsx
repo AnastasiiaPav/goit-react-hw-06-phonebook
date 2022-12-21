@@ -1,9 +1,15 @@
 import { Box } from './App.styled';
 import propTypes from 'prop-types';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { add } from 'Redux/contaSlise';
 
 
-export const  Form = ({onSubmit}) => {
+export const  Form = () => {
+
+  
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
   const [ name, setName] = useState('')
   const [ number, setNumber] = useState('')
 
@@ -32,10 +38,23 @@ const  inputChange = event => {
    setNumber('')
   };
 
+  const onSubmit = ({ ...data }) => {
+    const searchName = contacts.map(contact => contact.name);
+    const searchNumber = contacts.map(contact => contact.number);
 
+    if (searchName.includes(data.name)) {
+      alert(`${data.name} уже есть в Вашем списке контактов`);
+      return
+    }
+    if (searchNumber.includes(data.number)) {
+      alert(`В Вашем списке контактов уже есть номер ${data.number}`);
+      return
+    }
+    dispatch(add(data));
+  };
  
     return (
-      <form onSubmit={formSubmit}>
+      <form onSubmit={formSubmit} >
         <Box>
           <label >
             Name:{' '}
